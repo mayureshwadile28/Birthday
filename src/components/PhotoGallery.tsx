@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Image as ImageIcon } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
 
 export type UserImage = {
@@ -35,10 +35,11 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
         const reader = new FileReader();
         reader.onload = (e) => {
           if (e.target?.result) {
+            const description = prompt("Enter a short message for this photo:", "A cherished memory.");
             const newImage: UserImage = {
               id: `user-${Date.now()}-${Math.random()}`,
               imageUrl: e.target.result as string,
-              description: "A new cherished memory.", // Default description for user-uploaded images
+              description: description || "A new cherished memory.",
             };
             newImages.push(newImage);
             if (newImages.length === files.length) {
@@ -50,10 +51,6 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
       });
     }
   };
-
-  if (!images || images.length === 0) {
-    return null;
-  }
 
   return (
     <div className="w-full">
@@ -72,29 +69,38 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
           className="hidden"
         />
       </div>
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-4 max-w-4xl mx-auto space-y-4">
-        {images.map((image) => (
-          <div key={image.id} className="break-inside-avoid">
-            <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
-              <div className="aspect-w-16 aspect-h-9 bg-gray-100">
-                <Image
-                  src={image.imageUrl}
-                  alt={image.description}
-                  width={600}
-                  height={400}
-                  className="object-cover w-full h-auto"
-                  data-ai-hint={image.imageHint}
-                />
-              </div>
-              <CardContent className="p-4">
-                <CardDescription className="text-sm text-muted-foreground font-body italic">
-                  "{image.description}"
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
-      </div>
+      
+      {images.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center text-muted-foreground bg-card border-2 border-dashed border-border rounded-lg p-12 max-w-4xl mx-auto">
+            <ImageIcon className="w-16 h-16 mb-4" />
+            <h3 className="text-xl font-semibold mb-2 text-foreground">Your photo gallery is empty</h3>
+            <p className="mb-4">Click "Add Photos" to start building your collection of memories.</p>
+        </div>
+      ) : (
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-4 max-w-4xl mx-auto space-y-4">
+          {images.map((image) => (
+            <div key={image.id} className="break-inside-avoid">
+              <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
+                <div className="aspect-w-16 aspect-h-9 bg-gray-100">
+                  <Image
+                    src={image.imageUrl}
+                    alt={image.description}
+                    width={600}
+                    height={400}
+                    className="object-cover w-full h-auto"
+                    data-ai-hint={image.imageHint}
+                  />
+                </div>
+                <CardContent className="p-4">
+                  <CardDescription className="text-sm text-muted-foreground font-body italic">
+                    "{image.description}"
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
