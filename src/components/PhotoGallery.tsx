@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { PlusCircle, Image as ImageIcon, Replace, Loader2, Sparkles, Edit, Save } from 'lucide-react';
-import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
@@ -22,18 +21,17 @@ export type UserImage = {
 };
 
 type PhotoGalleryProps = {
-  images: (ImagePlaceholder | UserImage)[];
+  images: UserImage[];
   addUserImage: (image: UserImage) => void;
   updateUserImage: (id: string, updates: Partial<Pick<UserImage, 'imageUrl' | 'description'>>) => void;
   isInitialized: boolean;
 };
 
 
-function PhotoCard({ image, onReplace, onDescriptionSave, isUserImage }: { 
-    image: ImagePlaceholder | UserImage, 
+function PhotoCard({ image, onReplace, onDescriptionSave }: { 
+    image: UserImage, 
     onReplace: (id: string) => void, 
-    onDescriptionSave: (id: string, newDescription: string) => void, 
-    isUserImage: (image: ImagePlaceholder | UserImage) => image is UserImage 
+    onDescriptionSave: (id: string, newDescription: string) => void,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState(image.description);
@@ -53,20 +51,18 @@ function PhotoCard({ image, onReplace, onDescriptionSave, isUserImage }: {
             width={600}
             height={400}
             className="object-cover w-full h-auto"
-            data-ai-hint={'imageHint' in image ? image.imageHint : undefined}
+            data-ai-hint={image.imageHint}
           />
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-            {isUserImage(image) && (
-              <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-background/80 hover:bg-background"
-                  onClick={() => onReplace(image.id)}
-              >
-                  <Replace />
-                  Replace
-              </Button>
-            )}
+            <Button
+                variant="outline"
+                size="sm"
+                className="bg-background/80 hover:bg-background"
+                onClick={() => onReplace(image.id)}
+            >
+                <Replace />
+                Replace
+            </Button>
           </div>
         </div>
         <CardContent className="p-4">
@@ -88,11 +84,9 @@ function PhotoCard({ image, onReplace, onDescriptionSave, isUserImage }: {
                     <CardDescription className="text-sm text-muted-foreground font-body italic flex-1">
                         "{image.description}"
                     </CardDescription>
-                    {isUserImage(image) && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setIsEditing(true)}>
-                            <Edit />
-                        </Button>
-                    )}
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setIsEditing(true)}>
+                        <Edit />
+                    </Button>
                 </div>
             )}
 
@@ -200,10 +194,6 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
   const handleDescriptionSave = (id: string, newDescription: string) => {
     updateUserImage(id, { description: newDescription });
   };
-  
-  const isUserImage = (image: ImagePlaceholder | UserImage): image is UserImage => {
-    return image.id.startsWith('user-');
-  }
 
   return (
     <div className="w-full">
@@ -249,7 +239,6 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
                 image={image}
                 onReplace={handleReplacePhotoClick}
                 onDescriptionSave={handleDescriptionSave}
-                isUserImage={isUserImage}
             />
           ))}
         </div>

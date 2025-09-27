@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { UserImage } from '@/components/PhotoGallery';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const USER_IMAGES_STORAGE_KEY = 'papas-special-day-user-images';
 
@@ -15,10 +16,14 @@ export function useUserImages() {
       const storedImages = localStorage.getItem(USER_IMAGES_STORAGE_KEY);
       if (storedImages) {
         setUserImages(JSON.parse(storedImages));
+      } else {
+        // If no images are in storage, initialize with placeholder images
+        setUserImages(PlaceHolderImages);
       }
     } catch (error) {
       console.error('Failed to parse user images from localStorage', error);
-      setUserImages([]);
+      // Fallback to placeholder images on error
+      setUserImages(PlaceHolderImages);
     }
     setIsInitialized(true);
   }, []);
