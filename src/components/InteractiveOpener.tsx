@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useTransition, Suspense, lazy } from 'react';
+import { useState, useTransition, Suspense, lazy, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Loader2 } from 'lucide-react';
 
@@ -9,6 +9,8 @@ const BirthdayCake = lazy(() => import('./BirthdayCake').then(m => ({ default: m
 const BirthdayApp = lazy(() => import('./birthday-app').then(m => ({ default: m.BirthdayApp })));
 
 type Scene = 'card' | 'cake' | 'main_app';
+
+const INTRO_COMPLETED_KEY = 'papas-special-day-intro-completed';
 
 function LoadingFallback() {
     return (
@@ -23,6 +25,17 @@ export function InteractiveOpener() {
   const [scene, setScene] = useState<Scene>('card');
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasCompleted = sessionStorage.getItem(INTRO_COMPLETED_KEY);
+      if (hasCompleted === 'true') {
+        startTransition(() => {
+            setScene('main_app');
+        });
+      }
+    }
+  }, []);
+
 
   const handleCardClick = () => {
     startTransition(() => {
@@ -32,6 +45,9 @@ export function InteractiveOpener() {
 
   const handleCandlesBlown = () => {
     startTransition(() => {
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem(INTRO_COMPLETED_KEY, 'true');
+        }
         setScene('main_app');
     });
   };

@@ -24,7 +24,6 @@ type PhotoGalleryProps = {
   images: UserImage[];
   addUserImage: (image: UserImage) => void;
   updateUserImage: (id: string, updates: Partial<Pick<UserImage, 'imageUrl' | 'description'>>) => void;
-  isInitialized: boolean;
 };
 
 
@@ -97,7 +96,7 @@ function PhotoCard({ image, onReplace, onDescriptionSave }: {
 }
 
 
-export function PhotoGallery({ images, addUserImage, updateUserImage, isInitialized }: PhotoGalleryProps) {
+export function PhotoGallery({ images, addUserImage, updateUserImage }: PhotoGalleryProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceFileInputRef = useRef<HTMLInputElement>(null);
   
@@ -118,19 +117,60 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const resizeImage = (dataUrl: string, maxWidth: number): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          return reject(new Error('Failed to get canvas context'));
+        }
+
+        const scale = maxWidth / img.width;
+        const width = maxWidth;
+        const height = img.height * scale;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Adjust quality for JPG, otherwise use default PNG
+        const mimeType = dataUrl.startsWith('data:image/jpeg') ? 'image/jpeg' : 'image/png';
+        const quality = mimeType === 'image/jpeg' ? 0.85 : 1.0;
+
+        resolve(canvas.toDataURL(mimeType, quality));
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+      img.src = dataUrl;
+    });
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         if (e.target?.result) {
-          setCurrentImageDataUri(e.target.result as string);
-          setIsCaptionDialogOpen(true);
+          try {
+            const resizedDataUri = await resizeImage(e.target.result as string, 800);
+            setCurrentImageDataUri(resizedDataUri);
+            setIsCaptionDialogOpen(true);
+          } catch (error) {
+            console.error("Image resizing failed:", error);
+            toast({
+              variant: "destructive",
+              title: "Image Error",
+              description: "Could not process the image. Please try another one.",
+            });
+          }
         }
       };
       reader.readAsDataURL(file);
     }
-     // Reset input to allow uploading the same file again
     event.target.value = '';
   };
   
@@ -157,7 +197,6 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
         title: "Caption Failed",
         description: "Could not generate a caption. A default one will be used.",
       });
-      // Add image with a default description on failure
       const newImage: UserImage = {
         id: `user-${Date.now()}-${Math.random()}`,
         imageUrl: currentImageDataUri,
@@ -178,9 +217,19 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
 
     if (file && imageIdToReplace) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         if (e.target?.result) {
-          updateUserImage(imageIdToReplace, { imageUrl: e.target.result as string });
+           try {
+            const resizedDataUri = await resizeImage(e.target.result as string, 800);
+            updateUserImage(imageIdToReplace, { imageUrl: resizedDataUri });
+          } catch (error) {
+             console.error("Image resizing failed:", error);
+             toast({
+              variant: "destructive",
+              title: "Image Error",
+              description: "Could not process the replacement image.",
+            });
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -199,8 +248,8 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
     <div className="w-full">
       <div className="flex items-center justify-between mb-6 max-w-4xl mx-auto">
         <h2 className="text-3xl font-headline text-primary">Cherished Memories</h2>
-        <Button onClick={handleAddPhotosClick} variant="outline" disabled={!isInitialized}>
-          {isInitialized ? <PlusCircle className="mr-2 h-4 w-4" /> : <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button onClick={handleAddPhotosClick} variant="outline">
+          <PlusCircle className="mr-2 h-4 w-4" />
           Add Photos
         </Button>
         <input
@@ -219,13 +268,7 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
         />
       </div>
       
-      {!isInitialized ? (
-         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="h-64 bg-muted rounded-lg animate-pulse"></div>
-            <div className="h-80 bg-muted rounded-lg animate-pulse"></div>
-            <div className="h-64 bg-muted rounded-lg animate-pulse"></div>
-         </div>
-      ) : images.length === 0 ? (
+      {images.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center text-muted-foreground bg-card border-2 border-dashed border-border rounded-lg p-12 max-w-4xl mx-auto">
             <ImageIcon className="w-16 h-16 mb-4" />
             <h3 className="text-xl font-semibold mb-2 text-foreground">Your photo gallery is empty</h3>
