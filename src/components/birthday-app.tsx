@@ -9,14 +9,16 @@ import { PhotoGallery, type UserImage } from '@/components/PhotoGallery';
 import { Settings } from '@/components/Settings';
 import { Separator } from './ui/separator';
 
-const INITIAL_MESSAGE = `Happy 45th Birthday, Dad!
+const INITIAL_MESSAGE = `प्रिय बाबा,
 
-Another year older, another year wiser. Thank you for all the love, support, and wisdom you've shared with me throughout the years. You're not just my father, but my hero and best friend.
+वाढदिवसाच्या खूप खूप शुभेच्छा!
 
-Wishing you a day filled with joy, laughter, and everything you deserve.
+तुम्ही फक्त आमचे वडील नाही, तर आमचे हिरो आणि सर्वात चांगले मित्र आहात. तुमचे प्रेम, पाठिंबा आणि शहाणपणाने आमचे आयुष्य घडवले आहे.
 
-With all my love,
-Your Child`;
+तुमचा हा खास दिवस आनंद, हास्य आणि प्रेम यांनी भरलेला जावो, हीच आमची इच्छा.
+
+तुमचा लाडका,
+मुलगा`;
 
 export function BirthdayApp() {
   const { birthday, updateBirthday, isInitialized: isBirthdayInitialized } = useBirthday();
