@@ -3,6 +3,7 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
+import imageCompression from 'browser-image-compression';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { PlusCircle, Image as ImageIcon, Replace, Loader2, Sparkles, Edit, Save } from 'lucide-react';
@@ -118,9 +119,14 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+  const processAndSetImage = async (file: File) => {
+    try {
+      const options = {
+        maxSizeMB: 0.5, // (max file size in MB)
+        maxWidthOrHeight: 800, // (max width or height in pixels)
+        useWebWorker: true,
+      };
+      const compressedFile = await imageCompression(file, options);
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
@@ -128,9 +134,22 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
           setIsCaptionDialogOpen(true);
         }
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      console.error('Image compression failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Image Processing Failed",
+        description: "Could not process the image. Please try another one.",
+      });
     }
-     // Reset input to allow uploading the same file again
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      processAndSetImage(file);
+    }
     event.target.value = '';
   };
   
@@ -157,7 +176,6 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
         title: "Caption Failed",
         description: "Could not generate a caption. A default one will be used.",
       });
-      // Add image with a default description on failure
       const newImage: UserImage = {
         id: `user-${Date.now()}-${Math.random()}`,
         imageUrl: currentImageDataUri,
@@ -171,19 +189,33 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
     }
   };
 
-
-  const handleReplaceFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReplaceFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     const imageIdToReplace = event.target.dataset.imageId;
 
     if (file && imageIdToReplace) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          updateUserImage(imageIdToReplace, { imageUrl: e.target.result as string });
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 800,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            updateUserImage(imageIdToReplace, { imageUrl: e.target.result as string });
+          }
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Image compression failed:', error);
+        toast({
+          variant: "destructive",
+          title: "Image Processing Failed",
+          description: "Could not process the image. Please try another one.",
+        });
+      }
     }
     event.target.value = ''; 
     if(event.target.dataset) {
