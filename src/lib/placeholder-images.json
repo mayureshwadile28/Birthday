@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "father-son",
+      "description": "A father and son walking together on a path.",
+      "imageUrl": "https://images.unsplash.com/photo-1564989951309-d4cfecbf1990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXRoZXIlMjBzb258ZW58MHx8fHwxNzU4OTg3NzAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "father son"
+    },
+    {
+      "id": "family-beach",
+      "description": "A happy family playing on the beach at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFtaWx5JTIwYmVhY2h8ZW58MHx8fHwxNzU4OTIwMzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "family beach"
+    },
+    {
+      "id": "birthday-cake",
+      "description": "A birthday cake with lit candles on a table.",
+      "imageUrl": "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzU4OTM2ODg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "birthday cake"
+    },
+    {
+      "id": "graduation-hug",
+      "description": "A father hugging his child at a graduation ceremony.",
+      "imageUrl": "https://images.unsplash.com/photo-1758270703397-52d481a67409?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxncmFkdWF0aW9uJTIwaHVnfGVufDB8fHx8MTc1ODk4NzcwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graduation hug"
+    },
+    {
+      "id": "old-photo",
+      "description": "A vintage-style black and white photo of a father holding his baby.",
+      "imageUrl": "https://images.unsplash.com/photo-1593968007852-904502454005?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxvbGQlMjBwaG90b3xlbnwwfHx8fDE3NTg4ODQ5MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "old photo"
+    }
+  ]
 }

@@ -1,3 +1,5 @@
+import { BirthdayApp } from '@/components/birthday-app';
+
 export default function Home() {
-  return <></>;
+  return <BirthdayApp />;
 }
