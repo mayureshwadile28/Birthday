@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
-import { PlusCircle, Image as ImageIcon } from 'lucide-react';
+import { PlusCircle, Image as ImageIcon, Replace } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
 
 export type UserImage = {
@@ -22,9 +22,17 @@ type PhotoGalleryProps = {
 
 export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const replaceFileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddPhotosClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleReplacePhotoClick = (imageId: string) => {
+    if (replaceFileInputRef.current) {
+      replaceFileInputRef.current.dataset.imageId = imageId;
+      replaceFileInputRef.current.click();
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +60,30 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
     }
   };
 
+  const handleReplaceFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const imageIdToReplace = event.target.dataset.imageId;
+
+    if (file && imageIdToReplace) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setUserImages((prevImages) =>
+            prevImages.map((img) =>
+              img.id === imageIdToReplace
+                ? { ...img, imageUrl: e.target!.result as string }
+                : img
+            )
+          );
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset the input so the same file can be selected again
+    event.target.value = ''; 
+    delete event.target.dataset.imageId;
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-6 max-w-4xl mx-auto">
@@ -68,6 +100,13 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
           multiple
           className="hidden"
         />
+        <input
+          type="file"
+          ref={replaceFileInputRef}
+          onChange={handleReplaceFileChange}
+          accept="image/*"
+          className="hidden"
+        />
       </div>
       
       {images.length === 0 ? (
@@ -80,8 +119,8 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
         <div className="columns-1 md:columns-2 lg:columns-3 gap-4 max-w-4xl mx-auto space-y-4">
           {images.map((image) => (
             <div key={image.id} className="break-inside-avoid">
-              <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
-                <div className="aspect-w-16 aspect-h-9 bg-gray-100">
+              <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 group">
+                <div className="relative aspect-w-16 aspect-h-9 bg-gray-100">
                   <Image
                     src={image.imageUrl}
                     alt={image.description}
@@ -90,6 +129,17 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
                     className="object-cover w-full h-auto"
                     data-ai-hint={image.imageHint}
                   />
+                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-background/80 hover:bg-background"
+                        onClick={() => handleReplacePhotoClick(image.id)}
+                    >
+                        <Replace className="mr-2" />
+                        Replace
+                    </Button>
+                   </div>
                 </div>
                 <CardContent className="p-4">
                   <CardDescription className="text-sm text-muted-foreground font-body italic">
