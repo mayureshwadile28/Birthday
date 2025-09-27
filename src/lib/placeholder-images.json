@@ -1,10 +1,10 @@
 {
   "placeholderImages": [
     {
-      "id": "father-son",
-      "description": "A father and son walking together on a path.",
-      "imageUrl": "https://images.unsplash.com/photo-1564989951309-d4cfecbf1990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXRoZXIlMjBzb258ZW58MHx8fHwxNzU4OTg3NzAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "father son"
+      "id": "dad-birthday",
+      "description": "Happy Birthday to the best Dad!",
+      "imageUrl": "https://storage.googleapis.com/project-1-12862837332/uploads/2024-08-27/2b145a30-85cf-49e0-b6a4-239535e5d36b.jpeg",
+      "imageHint": "man birthday"
     },
     {
       "id": "family-beach",
