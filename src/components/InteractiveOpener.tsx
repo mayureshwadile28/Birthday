@@ -48,32 +48,37 @@ export function InteractiveOpener() {
         >
           <motion.div
             onClick={handleCardClick}
-            className="relative bg-card shadow-2xl rounded-lg cursor-pointer w-[320px] h-56 sm:w-[400px] sm:h-64 flex items-center justify-center border-2 border-primary/20"
+            className="relative bg-card shadow-2xl rounded-lg cursor-pointer w-[320px] h-56 sm:w-[400px] sm:h-64 flex items-center justify-center border-2 border-primary/10"
             whileHover={{ scale: 1.05, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="absolute w-full h-full overflow-hidden rounded-lg">
+            <div className="absolute inset-0 w-full h-full overflow-hidden rounded-lg">
                 <div 
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[200px] sm:border-l-[250px] border-r-[200px] sm:border-r-[250px] border-b-[130px] sm:border-b-[160px] border-b-primary/40"
-                    style={{ borderLeftColor: 'transparent', borderRightColor: 'transparent' }}
+                    className="absolute -top-1/2 left-0 w-full h-full bg-primary/5"
+                    style={{
+                        clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)'
+                    }}
                 />
                 <div 
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[200px] sm:border-l-[250px] border-r-[200px] sm:border-r-[250px] border-t-[130px] sm:border-t-[160px] border-t-primary/60"
-                     style={{ borderLeftColor: 'transparent', borderRightColor: 'transparent' }}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-[calc(100%+4px)] bg-accent/30"
                 />
+                 <div 
+                    className="absolute top-0 left-0 w-full h-1/2 border-b-2 border-accent/20"
+                />
+            </div>
+            
+            <div className="relative w-4/5 h-4/5 bg-card/90 backdrop-blur-sm rounded-md flex flex-col items-center justify-center text-center p-4 border border-border/50">
+                 {isPending ? (
+                    <Loader2 className="h-12 w-12 text-primary animate-spin" />
+                 ) : (
+                    <>
+                        <Mail className="h-12 w-12 text-primary" />
+                        <p className="mt-4 font-headline text-xl text-primary">A Special Message</p>
+                        <p className="text-sm text-muted-foreground mt-1">Tap to open</p>
+                    </>
+                 )}
             </div>
 
-            <div className="z-10 text-center flex flex-col items-center bg-card/80 backdrop-blur-sm p-6 rounded-full aspect-square">
-                {isPending ? <Loader2 className="h-16 w-16 text-primary animate-spin" /> : <Mail className="h-16 w-16 text-primary" /> }
-            </div>
-            <motion.div 
-                className="absolute z-20 bottom-5 text-primary font-headline text-lg"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-            >
-                Tap to open
-            </motion.div>
           </motion.div>
         </motion.div>
       )}

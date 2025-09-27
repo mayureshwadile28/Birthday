@@ -55,7 +55,7 @@ function PhotoCard({ image, onReplace, onDescriptionSave }: {
           />
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
             <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 className="bg-background/80 hover:bg-background"
                 onClick={() => onReplace(image.id)}
@@ -65,7 +65,7 @@ function PhotoCard({ image, onReplace, onDescriptionSave }: {
             </Button>
           </div>
         </div>
-        <CardContent className="p-4">
+        <CardContent className="p-4 bg-card">
             {isEditing ? (
                  <div className="flex flex-col gap-2">
                     <Textarea 
@@ -81,7 +81,7 @@ function PhotoCard({ image, onReplace, onDescriptionSave }: {
                  </div>
             ) : (
                 <div className="flex items-start justify-between gap-2">
-                    <CardDescription className="text-sm text-muted-foreground font-body italic flex-1">
+                    <CardDescription className="text-sm text-foreground/80 font-body italic flex-1">
                         "{image.description}"
                     </CardDescription>
                     <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setIsEditing(true)}>
