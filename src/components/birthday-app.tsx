@@ -9,6 +9,7 @@ import { PhotoGallery, type UserImage } from '@/components/PhotoGallery';
 import { Settings } from '@/components/Settings';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from './ui/separator';
+import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 
 const INITIAL_MESSAGE = `Happy 45th Birthday, Dad!
 
@@ -23,6 +24,8 @@ export function BirthdayApp() {
   const { birthday, updateBirthday, isInitialized } = useBirthday();
   const [message, setMessage] = useState(INITIAL_MESSAGE);
   const [userImages, setUserImages] = useState<UserImage[]>([]);
+
+  const allImages: (ImagePlaceholder | UserImage)[] = [...PlaceHolderImages, ...userImages];
 
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground font-body">
@@ -60,7 +63,7 @@ export function BirthdayApp() {
             
             <Separator className="my-4 max-w-4xl" />
             
-            <PhotoGallery images={userImages} setUserImages={setUserImages} />
+            <PhotoGallery images={allImages} setUserImages={setUserImages} />
           </div>
         </div>
       </main>
