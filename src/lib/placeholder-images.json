@@ -2,31 +2,31 @@
   "placeholderImages": [
     {
       "id": "dad-birthday",
-      "description": "Happy Birthday to the best Dad!",
+      "description": "Happy Birthday to the man who taught me how to be strong and kind. I love you, Dad!",
       "imageUrl": "https://storage.googleapis.com/project-1-12862837332/uploads/2024-08-27/2b145a30-85cf-49e0-b6a4-239535e5d36b.jpeg",
       "imageHint": "man birthday"
     },
     {
       "id": "family-beach",
-      "description": "A happy family playing on the beach at sunset.",
+      "description": "Our family's happy place. So many wonderful memories made right here.",
       "imageUrl": "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmFtaWx5JTIwYmVhY2h8ZW58MHx8fHwxNzU4OTIwMzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "family beach"
     },
     {
       "id": "birthday-cake",
-      "description": "A birthday cake with lit candles on a table.",
+      "description": "May all your wishes come true today and always. You deserve the world.",
       "imageUrl": "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzU4OTM2ODg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "birthday cake"
     },
     {
       "id": "graduation-hug",
-      "description": "A father hugging his child at a graduation ceremony.",
+      "description": "Couldn't have done it without you, Dad. Thank you for always believing in me.",
       "imageUrl": "https://images.unsplash.com/photo-1758270703397-52d481a67409?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxncmFkdWF0aW9uJTIwaHVnfGVufDB8fHx8MTc1ODk4NzcwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "graduation hug"
     },
     {
       "id": "old-photo",
-      "description": "A vintage-style black and white photo of a father holding his baby.",
+      "description": "From the very beginning, you've been my hero. Some things never change.",
       "imageUrl": "https://images.unsplash.com/photo-1593968007852-904502454005?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxvbGQlMjBwaG90b3xlbnwwfHx8fDE3NTg4ODQ5MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "old photo"
     }

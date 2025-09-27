@@ -39,10 +39,10 @@ export function useUserImages() {
     });
   }, []);
 
-  const updateUserImage = useCallback((id: string, newImageUrl: string) => {
+  const updateUserImage = useCallback((id: string, newImageUrl: string, newDescription?: string) => {
     setUserImages(prevImages => {
       const updatedImages = prevImages.map(img =>
-        img.id === id ? { ...img, imageUrl: newImageUrl } : img
+        img.id === id ? { ...img, imageUrl: newImageUrl, description: newDescription || img.description } : img
       );
       saveImages(updatedImages);
       return updatedImages;
