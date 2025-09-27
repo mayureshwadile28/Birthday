@@ -17,8 +17,9 @@ export function useUserImages() {
       if (storedImages) {
         setUserImages(JSON.parse(storedImages));
       } else {
-        // If no images are in storage, initialize with placeholder images
+        // If no images are in storage, initialize with placeholder images and save them.
         setUserImages(PlaceHolderImages);
+        localStorage.setItem(USER_IMAGES_STORAGE_KEY, JSON.stringify(PlaceHolderImages));
       }
     } catch (error) {
       console.error('Failed to parse user images from localStorage', error);
