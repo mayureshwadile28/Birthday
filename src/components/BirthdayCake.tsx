@@ -235,5 +235,3 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
     </div>
   );
 }
-
-    

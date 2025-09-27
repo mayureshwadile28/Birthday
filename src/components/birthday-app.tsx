@@ -4,11 +4,9 @@
 import { useState } from 'react';
 import { useBirthday } from '@/hooks/use-birthday';
 import { useUserImages } from '@/hooks/use-user-images';
-import { Countdown } from '@/components/Countdown';
 import { GreetingCard } from '@/components/GreetingCard';
 import { PhotoGallery, type UserImage } from '@/components/PhotoGallery';
 import { Settings } from '@/components/Settings';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from './ui/separator';
 
 const INITIAL_MESSAGE = `Happy 45th Birthday, Dad!
@@ -45,19 +43,6 @@ export function BirthdayApp() {
       <main className="flex-1">
         <div className="container py-8 md:py-16">
           <div className="flex flex-col items-center gap-12 md:gap-20">
-            {isInitialized && birthday ? (
-              <Countdown targetDate={birthday} />
-            ) : (
-              <div className="w-full max-w-2xl text-center">
-                  <Skeleton className="h-10 w-3/4 mx-auto mb-6" />
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-                      <Skeleton className="h-28 w-full" />
-                      <Skeleton className="h-28 w-full" />
-                      <Skeleton className="h-28 w-full" />
-                      <Skeleton className="h-28 w-full" />
-                  </div>
-              </div>
-            )}
             
             <GreetingCard message={message} setMessage={setMessage} />
             

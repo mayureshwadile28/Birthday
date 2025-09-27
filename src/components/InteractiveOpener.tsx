@@ -37,6 +37,7 @@ export function InteractiveOpener() {
   };
 
   return (
+    <div className="dark">
     <AnimatePresence mode="wait">
       {scene === 'card' && (
         <motion.div
@@ -136,5 +137,6 @@ export function InteractiveOpener() {
         </motion.div>
       )}
     </AnimatePresence>
+    </div>
   );
 }
