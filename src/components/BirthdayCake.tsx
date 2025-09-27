@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
+import Image from 'next/image';
 import { Mic, Wind, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
@@ -13,9 +14,10 @@ type BirthdayCakeProps = {
 };
 
 // A simple, stylized SVG flame component
-const Flame = ({ i }: { i: number }) => (
+const Flame = ({ i, style }: { i: number, style: React.CSSProperties }) => (
   <motion.div
-    className="absolute bottom-full left-1/2 -translate-x-1/2"
+    className="absolute"
+    style={style}
     initial={{ scaleY: 1, opacity: 1 }}
     animate={{
       scaleY: [1, 1.05, 1, 0.95, 1],
@@ -27,11 +29,12 @@ const Flame = ({ i }: { i: number }) => (
         delay: i * 0.2,
       },
     }}
-    exit={{ opacity: 0, scaleY: 0, transition: { duration: 0.5, delay: i * 0.05 } }}
+    exit={{ opacity: 0, scaleY: 0, transition: { duration: 0.3, delay: i * 0.05 } }}
   >
     <div className="w-4 h-6 bg-amber-400 rounded-t-full rounded-b-sm" style={{ clipPath: 'ellipse(50% 50% at 50% 50%)' }} />
   </motion.div>
 );
+
 
 export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
   const [blewOut, setBlewOut] = useState(false);
@@ -133,6 +136,17 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
     }
   };
 
+  const candlePositions = [
+    { top: '23%', left: '33%' },
+    { top: '16%', left: '40.5%' },
+    { top: '23%', left: '48%' },
+    { top: '10%', left: '55.5%' },
+    { top: '19%', left: '63%' },
+    { top: '8%', left: '70.5%' },
+    { top: '19%', left: '78%' },
+    { top: '12%', left: '85.5%' },
+  ];
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh bg-background text-foreground p-4">
@@ -140,7 +154,7 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.8 }}
-        className="text-center mb-12"
+        className="text-center mb-8"
       >
         <h2 className="text-4xl font-headline text-primary">Make a Wish!</h2>
         {micPermission === 'granted' && isListening && !blewOut && (
@@ -155,29 +169,27 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
         )}
       </motion.div>
 
-      <div className="relative w-full max-w-sm">
-        {/* Stylized Cake */}
-        <div className="w-full flex flex-col items-center">
-            {/* Top Layer */}
-            <div className="w-[80%] h-16 bg-card rounded-t-lg shadow-inner-lg border-x-2 border-t-2 border-border/80" />
-            {/* Bottom Layer */}
-            <div className="w-full h-20 bg-card rounded-lg shadow-lg border-2 border-border/80" />
-        </div>
-
-        {/* Candles */}
-        <div className="absolute top-[-4.5rem] left-0 right-0 flex justify-center items-end gap-6 h-20">
+      <div className="relative w-full max-w-sm aspect-[4/3]">
+        <Image
+          src="https://storage.googleapis.com/project-1-12862837332/uploads/2024-08-28/3d22c9a9-3c77-4c70-9831-50e505a74e50.png"
+          alt="Birthday cake with candles"
+          fill
+          priority
+          className="object-contain"
+        />
+        
+        {/* Candles Flames */}
+        <div className="absolute inset-0">
           <AnimatePresence>
             {!blewOut &&
-              [...Array(5)].map((_, i) => (
-                <div key={i} className="relative w-2 h-12 bg-secondary rounded-t-sm">
-                  <Flame i={i} />
-                </div>
+              candlePositions.map((style, i) => (
+                <Flame key={i} i={i} style={style} />
               ))}
           </AnimatePresence>
         </div>
       </div>
 
-      <div className="mt-12 text-center h-20">
+      <div className="mt-8 text-center h-20">
         <AnimatePresence>
         {blewOut && (
             <motion.p 
