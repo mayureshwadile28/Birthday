@@ -3,9 +3,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from './ui/button';
-import Image from 'next/image';
-import { Mic, Wind, AlertTriangle } from 'lucide-react';
+import { Wind, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
@@ -31,7 +29,7 @@ const Flame = ({ i, style }: { i: number, style: React.CSSProperties }) => (
     }}
     exit={{ opacity: 0, scaleY: 0, transition: { duration: 0.3, delay: i * 0.05 } }}
   >
-    <div className="w-4 h-6 bg-amber-400 rounded-t-full rounded-b-sm" style={{ clipPath: 'ellipse(50% 50% at 50% 50%)' }} />
+    <div className="w-3 h-5 bg-amber-400 rounded-t-full rounded-b-sm shadow-[0_0_10px_2px_rgba(251,191,36,0.7)]" style={{ clipPath: 'ellipse(50% 50% at 50% 50%)' }} />
   </motion.div>
 );
 
@@ -110,7 +108,6 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
       analyserRef.current!.getByteFrequencyData(dataArray);
       const avg = dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
 
-      // Increased threshold for more robust detection
       if (avg > 40 && !blewOut) { 
         console.log("Blow detected!", avg);
         setBlewOut(true);
@@ -135,17 +132,16 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
       animationFrameRef.current = requestAnimationFrame(check);
     }
   };
-
-  const candlePositions = [
-    { top: '23%', left: '33%' },
-    { top: '16%', left: '40.5%' },
-    { top: '23%', left: '48%' },
-    { top: '10%', left: '55.5%' },
-    { top: '19%', left: '63%' },
-    { top: '8%', left: '70.5%' },
-    { top: '19%', left: '78%' },
-    { top: '12%', left: '85.5%' },
-  ];
+  
+    const candlePositions = [
+        { top: '38%', left: '26%' },
+        { top: '33%', left: '33.5%' },
+        { top: '38%', left: '41%' },
+        { top: '31%', left: '48.5%' },
+        { top: '38%', left: '56%' },
+        { top: '33%', left: '63.5%' },
+        { top: '38%', left: '71%' },
+    ];
 
 
   return (
@@ -169,16 +165,39 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
         )}
       </motion.div>
 
-      <div className="relative w-full max-w-sm aspect-[4/3]">
-        <Image
-          src="https://storage.googleapis.com/project-1-12862837332/uploads/2024-08-28/3d22c9a9-3c77-4c70-9831-50e505a74e50.png"
-          alt="Birthday cake with candles"
-          fill
-          priority
-          className="object-contain"
-        />
+      <div className="relative w-full max-w-sm aspect-square">
+        {/* SVG Cake Drawing */}
+        <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-lg">
+          {/* Plate */}
+          <path d="M 20 180 Q 100 200 180 180 L 175 185 Q 100 205 25 185 Z" fill="hsl(var(--muted))" />
+          
+          {/* Cake Layer 2 */}
+          <path d="M 30 140 C 30 160, 170 160, 170 140 L 170 175 C 170 195, 30 195, 30 175 Z" fill="hsl(var(--primary))" />
+          <path d="M 30 140 Q 100 120 170 140" fill="hsl(var(--card))" stroke="hsl(var(--primary))" strokeWidth="2" />
+          
+          {/* Cake Layer 1 */}
+          <path d="M 45 100 C 45 120, 155 120, 155 100 L 155 140 C 155 160, 45 160, 45 140 Z" fill="hsl(var(--primary))" />
+          <path d="M 45 100 Q 100 80 155 100" fill="hsl(var(--card))" stroke="hsl(var(--primary))" strokeWidth="2" />
+
+          {/* Icing Drips */}
+          <circle cx="55" cy="103" r="10" fill="hsl(var(--card))" />
+          <circle cx="75" cy="105" r="12" fill="hsl(var(--card))" />
+          <circle cx="100" cy="102" r="11" fill="hsl(var(--card))" />
+          <circle cx="125" cy="105" r="12" fill="hsl(var(--card))" />
+          <circle cx="145" cy="103" r="10" fill="hsl(var(--card))" />
+          
+          {/* Candles */}
+          <rect x="50" y="80" width="4" height="20" fill="hsl(var(--accent))" rx="2" />
+          <rect x="65" y="75" width="4" height="25" fill="hsl(var(--accent))" rx="2" />
+          <rect x="80" y="80" width="4" height="20" fill="hsl(var(--accent))" rx="2" />
+          <rect x="95" y="73" width="4" height="27" fill="hsl(var(--accent))" rx="2" />
+          <rect x="110" y="80" width="4" height="20" fill="hsl(var(--accent))" rx="2" />
+          <rect x="125" y="75" width="4" height="25" fill="hsl(var(--accent))" rx="2" />
+          <rect x="140" y="80" width="4" height="20" fill="hsl(var(--accent))" rx="2" />
+        </svg>
+
         
-        {/* Candles Flames */}
+        {/* Animated Flames */}
         <div className="absolute inset-0">
           <AnimatePresence>
             {!blewOut &&
@@ -216,3 +235,5 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
     </div>
   );
 }
+
+    
