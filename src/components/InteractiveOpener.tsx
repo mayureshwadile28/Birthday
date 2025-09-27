@@ -1,27 +1,43 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useTransition, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail } from 'lucide-react';
-import { BirthdayApp } from './birthday-app';
-import { BirthdayCake } from './BirthdayCake';
+import { Mail, Loader2 } from 'lucide-react';
+
+const BirthdayCake = lazy(() => import('./BirthdayCake').then(m => ({ default: m.BirthdayCake })));
+const BirthdayApp = lazy(() => import('./birthday-app').then(m => ({ default: m.BirthdayApp })));
 
 type Scene = 'card' | 'cake' | 'main_app';
 
+function LoadingFallback() {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-dvh bg-background text-foreground">
+            <Loader2 className="h-16 w-16 text-primary animate-spin" />
+            <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+    )
+}
+
 export function InteractiveOpener() {
   const [scene, setScene] = useState<Scene>('card');
+  const [isPending, startTransition] = useTransition();
+
 
   const handleCardClick = () => {
-    setScene('cake');
+    startTransition(() => {
+        setScene('cake');
+    });
   };
 
   const handleCandlesBlown = () => {
-    setScene('main_app');
+    startTransition(() => {
+        setScene('main_app');
+    });
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {scene === 'card' && (
         <motion.div
           key="card"
@@ -47,7 +63,7 @@ export function InteractiveOpener() {
               ></div>
             </div>
             <div className="z-10 text-center bg-card/80 backdrop-blur-sm p-4 rounded-full">
-                <Mail className="h-16 w-16 text-primary" />
+                {isPending ? <Loader2 className="h-16 w-16 text-primary animate-spin" /> : <Mail className="h-16 w-16 text-primary" /> }
             </div>
             <motion.div 
                 className="absolute z-20 bottom-4 text-primary font-headline"
@@ -66,9 +82,12 @@ export function InteractiveOpener() {
           key="cake"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.7 }}
         >
-          <BirthdayCake onCandlesBlown={handleCandlesBlown} />
+            <Suspense fallback={<LoadingFallback />}>
+                <BirthdayCake onCandlesBlown={handleCandlesBlown} />
+            </Suspense>
         </motion.div>
       )}
 
@@ -105,7 +124,9 @@ export function InteractiveOpener() {
                 />
                 ))}
             </div>
-            <BirthdayApp />
+            <Suspense fallback={<LoadingFallback />}>
+                <BirthdayApp />
+            </Suspense>
         </motion.div>
       )}
     </AnimatePresence>
