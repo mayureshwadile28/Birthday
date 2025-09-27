@@ -39,10 +39,10 @@ export function useUserImages() {
     });
   }, []);
 
-  const updateUserImage = useCallback((id: string, newImageUrl: string, newDescription?: string) => {
+  const updateUserImage = useCallback((id: string, updates: Partial<Pick<UserImage, 'imageUrl' | 'description'>>) => {
     setUserImages(prevImages => {
       const updatedImages = prevImages.map(img =>
-        img.id === id ? { ...img, imageUrl: newImageUrl, description: newDescription || img.description } : img
+        img.id === id ? { ...img, ...updates } : img
       );
       saveImages(updatedImages);
       return updatedImages;

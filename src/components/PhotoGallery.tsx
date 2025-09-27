@@ -5,14 +5,14 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
-import { PlusCircle, Image as ImageIcon, Replace, Loader2, Sparkles } from 'lucide-react';
+import { PlusCircle, Image as ImageIcon, Replace, Loader2, Sparkles, Edit, Save } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
 import { generatePhotoCaption } from '@/ai/flows/generate-photo-caption';
 import { useToast } from '@/hooks/use-toast';
-import { Skeleton } from './ui/skeleton';
+import { Textarea } from './ui/textarea';
 
 export type UserImage = {
   id: string;
@@ -24,9 +24,84 @@ export type UserImage = {
 type PhotoGalleryProps = {
   images: (ImagePlaceholder | UserImage)[];
   addUserImage: (image: UserImage) => void;
-  updateUserImage: (id: string, imageUrl: string, newDescription?: string) => void;
+  updateUserImage: (id: string, updates: Partial<Pick<UserImage, 'imageUrl' | 'description'>>) => void;
   isInitialized: boolean;
 };
+
+
+function PhotoCard({ image, onReplace, onDescriptionSave, isUserImage }: { 
+    image: ImagePlaceholder | UserImage, 
+    onReplace: (id: string) => void, 
+    onDescriptionSave: (id: string, newDescription: string) => void, 
+    isUserImage: (image: ImagePlaceholder | UserImage) => image is UserImage 
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(image.description);
+
+  const handleSave = () => {
+    onDescriptionSave(image.id, editedDescription);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="break-inside-avoid">
+      <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 group">
+        <div className="relative aspect-w-16 aspect-h-9 bg-gray-100">
+          <Image
+            src={image.imageUrl}
+            alt={image.description}
+            width={600}
+            height={400}
+            className="object-cover w-full h-auto"
+            data-ai-hint={'imageHint' in image ? image.imageHint : undefined}
+          />
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+            {isUserImage(image) && (
+              <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-background/80 hover:bg-background"
+                  onClick={() => onReplace(image.id)}
+              >
+                  <Replace />
+                  Replace
+              </Button>
+            )}
+          </div>
+        </div>
+        <CardContent className="p-4">
+            {isEditing ? (
+                 <div className="flex flex-col gap-2">
+                    <Textarea 
+                        value={editedDescription}
+                        onChange={(e) => setEditedDescription(e.target.value)}
+                        rows={3}
+                        className="text-sm"
+                    />
+                    <div className="flex justify-end gap-2">
+                         <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)}>Cancel</Button>
+                         <Button size="sm" onClick={handleSave}><Save className="mr-2" /> Save</Button>
+                    </div>
+                 </div>
+            ) : (
+                <div className="flex items-start justify-between gap-2">
+                    <CardDescription className="text-sm text-muted-foreground font-body italic flex-1">
+                        "{image.description}"
+                    </CardDescription>
+                    {isUserImage(image) && (
+                        <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => setIsEditing(true)}>
+                            <Edit />
+                        </Button>
+                    )}
+                </div>
+            )}
+
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 
 export function PhotoGallery({ images, addUserImage, updateUserImage, isInitialized }: PhotoGalleryProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,7 +186,7 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          updateUserImage(imageIdToReplace, e.target.result as string);
+          updateUserImage(imageIdToReplace, { imageUrl: e.target.result as string });
         }
       };
       reader.readAsDataURL(file);
@@ -120,6 +195,10 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
     if(event.target.dataset) {
       delete event.target.dataset.imageId;
     }
+  };
+
+  const handleDescriptionSave = (id: string, newDescription: string) => {
+    updateUserImage(id, { description: newDescription });
   };
   
   const isUserImage = (image: ImagePlaceholder | UserImage): image is UserImage => {
@@ -165,38 +244,13 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
       ) : (
         <div className="columns-1 md:columns-2 lg:columns-3 gap-4 max-w-4xl mx-auto space-y-4">
           {images.map((image) => (
-            <div key={image.id} className="break-inside-avoid">
-              <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 group">
-                <div className="relative aspect-w-16 aspect-h-9 bg-gray-100">
-                  <Image
-                    src={image.imageUrl}
-                    alt={image.description}
-                    width={600}
-                    height={400}
-                    className="object-cover w-full h-auto"
-                    data-ai-hint={image.imageHint}
-                  />
-                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {isUserImage(image) && (
-                      <Button
-                          variant="outline"
-                          size="sm"
-                          className="bg-background/80 hover:bg-background"
-                          onClick={() => handleReplacePhotoClick(image.id)}
-                      >
-                          <Replace />
-                          Replace
-                      </Button>
-                    )}
-                   </div>
-                </div>
-                <CardContent className="p-4">
-                  <CardDescription className="text-sm text-muted-foreground font-body italic">
-                    "{image.description}"
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </div>
+             <PhotoCard 
+                key={image.id}
+                image={image}
+                onReplace={handleReplacePhotoClick}
+                onDescriptionSave={handleDescriptionSave}
+                isUserImage={isUserImage}
+            />
           ))}
         </div>
       )}
@@ -227,6 +281,10 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
               <div>
                 <RadioGroupItem value="Family" id="r-family" className="peer sr-only" />
                 <Label htmlFor="r-family" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">The Family</Label>
+              </div>
+               <div>
+                <RadioGroupItem value="Just him" id="r-just-him" className="peer sr-only" />
+                <Label htmlFor="r-just-him" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">Just Him</Label>
               </div>
             </RadioGroup>
           </div>
