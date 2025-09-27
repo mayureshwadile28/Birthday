@@ -31,7 +31,7 @@ export function BirthdayApp() {
   const allImages: (ImagePlaceholder | UserImage)[] = [...PlaceHolderImages, ...userImages];
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background text-foreground font-body">
+    <div className="flex flex-col min-h-dvh bg-transparent text-foreground font-body">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <h1 className="text-xl md:text-2xl font-headline text-primary tracking-tight">
@@ -76,7 +76,7 @@ export function BirthdayApp() {
         </div>
       </main>
 
-      <footer className="py-6 md:px-8 md:py-0 border-t">
+      <footer className="py-6 md:px-8 md:py-0 border-t bg-background/95">
           <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
               <p className="text-center text-sm leading-loose text-muted-foreground">
                   Built with love for the best dad in the world.

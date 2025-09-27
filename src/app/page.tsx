@@ -1,5 +1,5 @@
-import { BirthdayApp } from '@/components/birthday-app';
+import { InteractiveOpener } from '@/components/InteractiveOpener';
 
 export default function Home() {
-  return <BirthdayApp />;
+  return <InteractiveOpener />;
 }
