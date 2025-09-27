@@ -99,6 +99,26 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
     }
   };
 
+  const blowOutCandles = () => {
+    if (blewOut) return; // Prevent multiple triggers
+    setBlewOut(true);
+    setIsListening(false);
+
+    // Stop microphone access and cleanup
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    // Trigger the parent component callback after a delay for the animation
+    setTimeout(onCandlesBlown, 2000);
+  };
+
   const detectBlow = () => {
     if (!analyserRef.current) return;
     const bufferLength = analyserRef.current.frequencyBinCount;
@@ -108,20 +128,9 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
       analyserRef.current!.getByteFrequencyData(dataArray);
       const avg = dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
 
-      if (avg > 40 && !blewOut) { 
+      if (avg > 40) {
         console.log("Blow detected!", avg);
-        setBlewOut(true);
-        setIsListening(false);
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => track.stop());
-        }
-        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-          audioContextRef.current.close();
-        }
-        if (animationFrameRef.current) {
-            cancelAnimationFrame(animationFrameRef.current);
-        }
-        setTimeout(onCandlesBlown, 2000); // Wait for animation
+        blowOutCandles();
       } else {
         if (!blewOut) {
           animationFrameRef.current = requestAnimationFrame(check);
@@ -222,14 +231,26 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
             </motion.p>
         )}
         </AnimatePresence>
-        {micPermission === 'denied' && (
-          <Alert variant="destructive" className="max-w-sm">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Microphone Required</AlertTitle>
-            <AlertDescription>
-              Please enable microphone access in your browser to blow out the candles.
-            </AlertDescription>
-          </Alert>
+        {micPermission === 'denied' && !blewOut && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Alert variant="destructive" className="max-w-sm text-left">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Microphone Required</AlertTitle>
+              <AlertDescription className="mb-4">
+                Please enable microphone access, or click the button below to continue.
+              </AlertDescription>
+              <button
+                onClick={blowOutCandles}
+                className="w-full bg-destructive/90 text-destructive-foreground hover:bg-destructive text-sm font-semibold py-2 px-4 rounded-md transition-colors"
+              >
+                I've made my wish!
+              </button>
+            </Alert>
+          </motion.div>
         )}
       </div>
     </div>

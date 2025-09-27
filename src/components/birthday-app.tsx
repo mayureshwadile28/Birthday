@@ -22,10 +22,8 @@ Your Child`;
 
 export function BirthdayApp() {
   const { birthday, updateBirthday, isInitialized: isBirthdayInitialized } = useBirthday();
-  const { userImages, addUserImage, updateUserImage, isInitialized: isImagesInitialized } = useUserImages();
+  const { userImages, addUserImage, updateUserImage } = useUserImages();
   const [message, setMessage] = useState(INITIAL_MESSAGE);
-
-  const isInitialized = isBirthdayInitialized && isImagesInitialized;
 
   return (
     <div className="flex flex-col min-h-dvh bg-transparent text-foreground font-body">
@@ -37,7 +35,7 @@ export function BirthdayApp() {
           <Settings 
             birthday={birthday} 
             updateBirthday={updateBirthday} 
-            isInitialized={isInitialized} 
+            isInitialized={isBirthdayInitialized}
           />
         </div>
       </header>
@@ -45,7 +43,7 @@ export function BirthdayApp() {
       <main className="flex-1">
         <div className="container py-8 md:py-16">
           <div className="flex flex-col items-center gap-12 md:gap-20">
-            {isInitialized && birthday ? (
+            {isBirthdayInitialized && birthday ? (
               <Countdown targetDate={birthday} />
             ) : (
               <div className="w-full max-w-2xl text-center">
@@ -67,7 +65,6 @@ export function BirthdayApp() {
               images={userImages} 
               addUserImage={addUserImage}
               updateUserImage={updateUserImage}
-              isInitialized={isInitialized}
             />
           </div>
         </div>
