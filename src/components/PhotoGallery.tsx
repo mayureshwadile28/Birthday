@@ -3,7 +3,6 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import imageCompression from 'browser-image-compression';
 import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { PlusCircle, Image as ImageIcon, Replace, Loader2, Sparkles, Edit, Save } from 'lucide-react';
@@ -121,6 +120,7 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
 
   const processAndSetImage = async (file: File) => {
     try {
+      const imageCompression = (await import('browser-image-compression')).default;
       const options = {
         maxSizeMB: 0.5, // (max file size in MB)
         maxWidthOrHeight: 800, // (max width or height in pixels)
@@ -195,6 +195,7 @@ export function PhotoGallery({ images, addUserImage, updateUserImage, isInitiali
 
     if (file && imageIdToReplace) {
       try {
+        const imageCompression = (await import('browser-image-compression')).default;
         const options = {
           maxSizeMB: 0.5,
           maxWidthOrHeight: 800,
