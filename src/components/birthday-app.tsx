@@ -61,7 +61,7 @@ export function BirthdayApp() {
             
             <GreetingCard message={message} setMessage={setMessage} />
             
-            <Separator className="my-4" />
+            <Separator className="my-4 max-w-4xl" />
             
             <PhotoGallery images={allImages} setUserImages={setUserImages} />
           </div>

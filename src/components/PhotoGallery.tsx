@@ -3,14 +3,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
+import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { PlusCircle } from 'lucide-react';
 import type { ImagePlaceholder } from '@/lib/placeholder-images';
@@ -45,7 +38,7 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
             const newImage: UserImage = {
               id: `user-${Date.now()}-${Math.random()}`,
               imageUrl: e.target.result as string,
-              description: file.name,
+              description: "A new cherished memory.", // Default description for user-uploaded images
             };
             newImages.push(newImage);
             if (newImages.length === files.length) {
@@ -63,8 +56,8 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
   }
 
   return (
-    <div className="w-full text-center">
-      <div className="flex items-center justify-between mb-6 max-w-2xl mx-auto">
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-6 max-w-4xl mx-auto">
         <h2 className="text-3xl font-headline text-primary">Cherished Memories</h2>
         <Button onClick={handleAddPhotosClick} variant="outline">
           <PlusCircle className="mr-2 h-4 w-4" />
@@ -79,35 +72,29 @@ export function PhotoGallery({ images, setUserImages }: PhotoGalleryProps) {
           className="hidden"
         />
       </div>
-      <Carousel
-        className="w-full max-w-2xl mx-auto"
-        opts={{
-          loop: true,
-        }}
-      >
-        <CarouselContent>
-          {images.map((image) => (
-            <CarouselItem key={image.id}>
-              <div className="p-1">
-                <Card className="overflow-hidden">
-                  <CardContent className="flex aspect-video items-center justify-center p-0 relative">
-                    <Image
-                      src={image.imageUrl}
-                      alt={image.description}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 hover:scale-105"
-                      data-ai-hint={image.imageHint}
-                    />
-                  </CardContent>
-                </Card>
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-4 max-w-4xl mx-auto space-y-4">
+        {images.map((image) => (
+          <div key={image.id} className="break-inside-avoid">
+            <Card className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1">
+              <div className="aspect-w-16 aspect-h-9 bg-gray-100">
+                <Image
+                  src={image.imageUrl}
+                  alt={image.description}
+                  width={600}
+                  height={400}
+                  className="object-cover w-full h-auto"
+                  data-ai-hint={image.imageHint}
+                />
               </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="hidden sm:flex" />
-        <CarouselNext className="hidden sm:flex" />
-      </Carousel>
+              <CardContent className="p-4">
+                <CardDescription className="text-sm text-muted-foreground font-body italic">
+                  "{image.description}"
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
