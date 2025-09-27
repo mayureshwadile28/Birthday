@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { useBirthday } from '@/hooks/use-birthday';
+import { useUserImages } from '@/hooks/use-user-images';
 import { Countdown } from '@/components/Countdown';
 import { GreetingCard } from '@/components/GreetingCard';
 import { PhotoGallery, type UserImage } from '@/components/PhotoGallery';
@@ -21,9 +22,11 @@ With all my love,
 Your Child`;
 
 export function BirthdayApp() {
-  const { birthday, updateBirthday, isInitialized } = useBirthday();
+  const { birthday, updateBirthday, isInitialized: isBirthdayInitialized } = useBirthday();
+  const { userImages, addUserImage, updateUserImage, isInitialized: isImagesInitialized } = useUserImages();
   const [message, setMessage] = useState(INITIAL_MESSAGE);
-  const [userImages, setUserImages] = useState<UserImage[]>([]);
+
+  const isInitialized = isBirthdayInitialized && isImagesInitialized;
 
   const allImages: (ImagePlaceholder | UserImage)[] = [...PlaceHolderImages, ...userImages];
 
@@ -63,7 +66,12 @@ export function BirthdayApp() {
             
             <Separator className="my-4 max-w-4xl" />
             
-            <PhotoGallery images={allImages} setUserImages={setUserImages} />
+            <PhotoGallery 
+              images={allImages} 
+              addUserImage={addUserImage}
+              updateUserImage={updateUserImage}
+              isInitialized={isInitialized}
+            />
           </div>
         </div>
       </main>
