@@ -17,8 +17,8 @@ const INITIAL_MESSAGE = `प्रिय बाबा,
 
 तुमचा हा खास दिवस आनंद, हास्य आणि प्रेम यांनी भरलेला जावो, हीच आमची इच्छा.
 
-तुमचा लाडका,
-मुलगा`;
+तुमचा लाडका मुलगा,
+मयुरेश`;
 
 export function BirthdayApp() {
   const { birthday, updateBirthday, isInitialized: isBirthdayInitialized } = useBirthday();
