@@ -6,12 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
 import { Mic, Wind } from 'lucide-react';
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 type BirthdayCakeProps = {
   onCandlesBlown: () => void;
 };
 
-const DUMMY_CAKE_IMAGE = 'https://picsum.photos/seed/birthday-cake/600/400';
+const cakeImage = PlaceHolderImages.find(img => img.id === 'birthday-cake');
+const DUMMY_CAKE_IMAGE = cakeImage?.imageUrl || 'https://picsum.photos/seed/birthday-cake/600/400';
 
 export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
   const [listening, setListening] = useState(false);
@@ -103,19 +105,19 @@ export function BirthdayCake({ onCandlesBlown }: BirthdayCakeProps) {
         <p className="text-muted-foreground mt-2">Click the button and blow into your mic to blow out the candles.</p>
       </motion.div>
 
-      <div className="relative w-full max-w-lg">
+      <div className="relative w-full max-w-md">
         <Image src={DUMMY_CAKE_IMAGE} alt="Birthday cake with candles" width={600} height={400} className="rounded-lg shadow-2xl" />
         <AnimatePresence>
         {!blewOut && (
             <motion.div
                 key="flames" 
-                className="absolute inset-0 flex justify-center items-start pt-16 gap-2"
+                className="absolute inset-0 flex justify-center items-start pt-16 sm:pt-20 gap-2.5"
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0, transition: { duration: 1.5 } }}
             >
             {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="w-2 h-8 bg-amber-400 rounded-t-full" style={{
-                    boxShadow: '0 0 10px 4px rgba(251, 191, 36, 0.7), 0 0 20px 8px rgba(251, 191, 36, 0.5)',
+                <div key={i} className="w-2.5 h-10 bg-amber-400 rounded-t-full" style={{
+                    boxShadow: '0 0 12px 5px rgba(251, 191, 36, 0.7), 0 0 22px 9px rgba(251, 191, 36, 0.5)',
                 }} />
             ))}
             </motion.div>

@@ -44,29 +44,30 @@ export function InteractiveOpener() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center min-h-dvh bg-background text-foreground"
+          className="flex flex-col items-center justify-center min-h-dvh bg-background text-foreground p-4"
         >
           <motion.div
             onClick={handleCardClick}
-            className="relative bg-card shadow-2xl rounded-lg cursor-pointer w-72 h-48 flex items-center justify-center border-2 border-primary/20"
-            whileHover={{ scale: 1.05 }}
+            className="relative bg-card shadow-2xl rounded-lg cursor-pointer w-[320px] h-56 sm:w-[400px] sm:h-64 flex items-center justify-center border-2 border-primary/20"
+            whileHover={{ scale: 1.05, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="absolute w-full h-full">
-              <div
-                className="absolute top-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-b-[96px] border-b-primary/40 border-l-transparent border-r-transparent transform"
-                style={{ borderLeftWidth: '144px', borderRightWidth: '144px', borderBottomWidth: '96px' }}
-              ></div>
-              <div
-                className="absolute bottom-0 left-0 w-0 h-0 border-l-[144px] border-r-[144px] border-t-[96px] border-t-primary/60 border-l-transparent border-r-transparent"
-                style={{ borderLeftWidth: '144px', borderRightWidth: '144px', borderTopWidth: '96px' }}
-              ></div>
+            <div className="absolute w-full h-full overflow-hidden rounded-lg">
+                <div 
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[200px] sm:border-l-[250px] border-r-[200px] sm:border-r-[250px] border-b-[130px] sm:border-b-[160px] border-b-primary/40"
+                    style={{ borderLeftColor: 'transparent', borderRightColor: 'transparent' }}
+                />
+                <div 
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[200px] sm:border-l-[250px] border-r-[200px] sm:border-r-[250px] border-t-[130px] sm:border-t-[160px] border-t-primary/60"
+                     style={{ borderLeftColor: 'transparent', borderRightColor: 'transparent' }}
+                />
             </div>
-            <div className="z-10 text-center bg-card/80 backdrop-blur-sm p-4 rounded-full">
+
+            <div className="z-10 text-center flex flex-col items-center bg-card/80 backdrop-blur-sm p-6 rounded-full aspect-square">
                 {isPending ? <Loader2 className="h-16 w-16 text-primary animate-spin" /> : <Mail className="h-16 w-16 text-primary" /> }
             </div>
             <motion.div 
-                className="absolute z-20 bottom-4 text-primary font-headline"
+                className="absolute z-20 bottom-5 text-primary font-headline text-lg"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
@@ -102,7 +103,7 @@ export function InteractiveOpener() {
                 {Array.from({ length: 15 }).map((_, i) => (
                 <motion.div
                     key={i}
-                    className="absolute rounded-full bg-primary/20"
+                    className="absolute rounded-full bg-accent/20"
                     initial={{
                         x: Math.random() * 100 + 'vw',
                         y: 110 + 'vh',
